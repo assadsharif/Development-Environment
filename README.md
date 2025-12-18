@@ -1,142 +1,190 @@
-# RAG Chatbot Backend
+# Development Environment
 
-FastAPI backend for the Physical AI & Humanoid Robotics textbook RAG chatbot.
+Comprehensive development environment with BMAD framework, Docusaurus, and automation tools for modern software development.
 
 ## Quick Start
 
-### 1. Install Dependencies
+### One-Command Setup
+
+Clone the repository and run the bootstrap script to set up everything automatically:
 
 ```bash
-cd backend
-pip install -r requirements.txt
+git clone https://github.com/assadsharif/Development-Environment.git
+cd Development-Environment
+./bootstrap.sh
 ```
 
-### 2. Configure Environment
+This will:
+- ✅ Check for required tools (Node.js, Python)
+- ✅ Create Python virtual environment
+- ✅ Install all dependencies
+- ✅ Set up BMAD framework
+- ✅ Configure Docusaurus
+- ✅ Create `.env` template file
 
-Copy the example environment file and fill in your credentials:
+### Manual Setup
+
+If you prefer to set up components individually:
+
+#### 1. Install Dependencies Only
 
 ```bash
-cp .env.example .env
+./install.sh
+```
+
+#### 2. Verify Your Setup
+
+```bash
+./check.sh
+```
+
+This will verify:
+- Required tools (Node.js, npm, Python, Git)
+- Environment variables
+- Project structure
+- Installed dependencies
+
+### 3. Configure Environment
+
+Update the `.env` file with your credentials:
+
+```bash
+nano .env  # or use your preferred editor
 ```
 
 Required environment variables:
 - `OPENAI_API_KEY` - Your OpenAI API key
-- `QDRANT_URL` - Qdrant Cloud cluster URL
-- `QDRANT_API_KEY` - Qdrant authentication key
-- `DATABASE_URL` - Neon Postgres connection string
+- `QDRANT_API_KEY` - Qdrant Cloud API key
+- `QDRANT_CLOUD_URL` - Qdrant Cloud cluster URL
+- `NEON_CONNECTION_STRING` - Neon Postgres connection string
+- `JWT_SECRET_KEY` - JWT secret for authentication
+- `GITHUB_PAT` - GitHub Personal Access Token
 
-### 3. Set Up External Services
+## Setup Scripts
 
-#### Qdrant Cloud (Vector Database)
+### `bootstrap.sh`
+Complete environment setup script that:
+- Checks for Node.js and Python installations
+- Creates and activates Python virtual environment
+- Installs all project dependencies
+- Sets up BMAD framework
+- Creates `.env` template file
+
+### `install.sh`
+Dependency installation script that:
+- Installs Node.js dependencies
+- Installs Python packages from requirements.txt
+- Installs Docusaurus dependencies
+
+### `check.sh`
+Environment verification script that checks:
+- Required tools (Node.js, npm, Python, Git, GitHub CLI)
+- Environment variables configuration
+- Project structure
+- Installed dependencies
+
+## External Services Setup
+
+### Qdrant Cloud (Vector Database)
 1. Create account at [cloud.qdrant.io](https://cloud.qdrant.io)
 2. Create a new cluster (free tier available)
 3. Copy the cluster URL and API key to `.env`
 
-#### Neon Postgres (Conversation Storage)
+### Neon Postgres (Database)
 1. Create account at [neon.tech](https://neon.tech)
 2. Create a new project (free tier available)
 3. Copy the connection string to `.env`
 
-#### OpenAI API
+### OpenAI API
 1. Get API key from [platform.openai.com](https://platform.openai.com)
-2. Ensure you have access to GPT-4 and text-embedding-ada-002
+2. Ensure you have access to required models
 3. Copy the API key to `.env`
 
-### 4. Ingest Content
+### GitHub Personal Access Token
+1. Go to [github.com/settings/tokens](https://github.com/settings/tokens)
+2. Generate new token with `repo` scope
+3. Copy the token to `.env`
 
-Run the ingestion script to populate the vector database:
+## Usage
 
-```bash
-# Dry run (no upload)
-python scripts/ingest_content.py --docs-path ../my-project/docs --dry-run
-
-# Full ingestion
-python scripts/ingest_content.py --docs-path ../my-project/docs
-```
-
-### 5. Start the Server
+### Start Docusaurus Development Server
 
 ```bash
-# Development mode
-uvicorn src.main:app --reload --port 8000
-
-# Production mode
-uvicorn src.main:app --host 0.0.0.0 --port 8000
+cd my-docusaurus
+npm start
 ```
 
-## API Endpoints
+### Activate Python Virtual Environment
 
-### POST /api/chat
-Process a chat query and return RAG-generated response.
-
-```json
-{
-  "query": "What is Zero Moment Point?",
-  "session_id": "uuid-string",
-  "selected_text": null,
-  "page_context": {
-    "chapter_id": "ch19",
-    "url": "/docs/part-v-control/ch19-bipedal-locomotion"
-  }
-}
+```bash
+source venv/bin/activate
 ```
 
-### GET /api/search
-Direct vector similarity search.
+### Run Python Scripts
 
+```bash
+source venv/bin/activate
+python environment.py
 ```
-GET /api/search?q=bipedal+locomotion&limit=5
-```
-
-### GET /api/health
-Service health check.
 
 ## Project Structure
 
 ```
-backend/
-├── src/
-│   ├── api/routes/      # FastAPI route handlers
-│   ├── core/            # Configuration and prompts
-│   ├── models/          # Pydantic schemas
-│   ├── services/        # Business logic
-│   └── main.py          # Application entry point
-├── scripts/
-│   └── ingest_content.py  # Content ingestion
-├── requirements.txt
-└── .env.example
+Development-Environment/
+├── bootstrap.sh           # Complete environment setup
+├── install.sh            # Dependency installation
+├── check.sh              # Environment verification
+├── environment.py        # Python environment utilities
+├── config.json           # Project configuration
+├── .env                  # Environment variables (not in git)
+├── .gitignore            # Git ignore rules
+├── my-docusaurus/        # Docusaurus documentation site
+│   ├── docs/
+│   ├── src/
+│   └── package.json
+├── my-project/           # Main project directory
+│   └── _bmad/           # BMAD framework
+│       ├── bmm/         # BMAD Method files
+│       └── core/        # Core BMAD resources
+└── venv/                # Python virtual environment (not in git)
 ```
 
-## Development
+## Features
 
-### Running Tests
+### BMAD Framework
+Build, Measure, Analyze, Deploy methodology for software development with comprehensive workflows and agent templates.
 
-```bash
-pytest tests/
-```
+### Docusaurus Integration
+Documentation site with modern UI and full-text search capabilities.
 
-### Code Style
+### Automated Setup
+One-command installation and configuration for fast onboarding.
 
-```bash
-# Format
-black src/ scripts/
+### Environment Management
+Secure credential handling with `.env` file support.
 
-# Lint
-ruff src/ scripts/
-```
+## Prerequisites
 
-## Deployment
+- **Node.js** 16.x or higher
+- **Python** 3.8 or higher
+- **Git** 2.x or higher
+- **npm** or **yarn**
 
-### Docker
+## Contributing
 
-```bash
-docker build -t rag-chatbot-backend .
-docker run -p 8000:8000 --env-file .env rag-chatbot-backend
-```
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### Environment Variables for Production
+## License
 
-Set these additional variables for production:
-- `APP_ENV=production`
-- `DEBUG=false`
-- `CORS_ORIGINS=https://your-site.com`
+This project is licensed under the MIT License.
+
+## Support
+
+For issues and questions:
+- Open an issue on GitHub
+- Check the documentation in `my-docusaurus/docs`
+- Review BMAD framework guides in `my-project/_bmad/bmm/docs`
